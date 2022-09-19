@@ -123,9 +123,11 @@ query = f'age >= {age[0]} & age <= {age[1]}   & job in {job} & marital in {marit
 row1_left_col, row1_mid_col, row1_far_right_col, row1_more_far_right_col, row1_right_col  = st.columns(5)
 
 with row1_left_col:
-    # st.markdown('### Total Balance')
-    total_balance = int(data.query(query)['balance'].sum())
-    st.metric(label="Total Balance", value=f"${total_balance:,}", delta=None, delta_color='inverse')
+    total_balance = int(data.query(query)['balance'].loc[data['balance'] >= 0].sum())
+    # get the sum of the balance whose value are less than 0
+    total_negative_balance = int(data.query(query)['balance'].loc[data['balance'] < 0].sum())
+    total_positve_balance = total_balance + total_negative_balance
+    st.metric(label="Total Balance", value=f"${total_positve_balance:,}", delta=f"${total_negative_balance:,}", delta_color='inverse')
 
 
 with row1_mid_col:
@@ -135,7 +137,7 @@ with row1_mid_col:
 
 with row1_far_right_col:
     yes_total_savings = int(data.query(query)['Savings'].value_counts()['yes'])
-    st.metric(label="Savings Account", value=f'{len(data.query(query)) - yes_total_savings:,}', delta=f'-{yes_total_savings:,} pp', delta_color='inverse')
+    st.metric(label="Savings Account", value=f'{len(data.query(query)) - yes_total_savings:,}', delta=f'{yes_total_savings:,} pp')
 
 with row1_more_far_right_col:
     yes_total_cheque = int(data.query(query)['Cheque'].value_counts()['yes'])
