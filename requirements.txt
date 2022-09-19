@@ -1,6 +1,6 @@
 numpy
 pandas
-streamlit==1.12.2
+streamlit
 plotly.express
 plotly.graph_objects
 scikit-learn
